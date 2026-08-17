@@ -230,7 +230,7 @@ int ObMajorMergeProgressChecker::check_schema_version()
   if (OB_ISNULL(merge_info_mgr_)) {
     ret = OB_ERR_UNEXPECTED;
     LOG_WARN("merge_info_mgr is unexpected null", KR(ret), K_(merge_info_mgr));
-  } else if (OB_FAIL(merge_info_mgr_->get_freeze_info_mgr().get_freeze_info(get_compaction_scn(), freeze_info_))) {
+  } else if (OB_FAIL(merge_info_mgr_->get_freeze_info(get_compaction_scn(), freeze_info_))) {
     LOG_WARN("failed to get freeze info by snapshot version", KR(ret), K_(tenant_id), "compaction_scn", get_compaction_scn());
   } else if (OB_FAIL(schema_service_->get_tenant_refreshed_schema_version(
                     tenant_id_, local_schema_version))) {

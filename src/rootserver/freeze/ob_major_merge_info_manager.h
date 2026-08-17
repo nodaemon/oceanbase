@@ -48,7 +48,6 @@ public:
   {}
   virtual ~ObMajorMergeInfoManager() {}
   ObZoneMergeManager &get_zone_merge_mgr() { return zone_merge_mgr_; }
-  share::ObFreezeInfoManager &get_freeze_info_mgr() { return freeze_info_mgr_; }
   int init(uint64_t tenant_id,
            common::ObMySQLProxy &sql_proxy);
   int try_reload();
