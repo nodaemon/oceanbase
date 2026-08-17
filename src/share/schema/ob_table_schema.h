@@ -624,15 +624,21 @@ struct ObBackUpTableModeOp
     return ret_str;
   }
 
+  static constexpr int64_t OB_MAX_TABLE_MODE_STR_LEN = 128;
+
   static int get_table_mode(const common::ObString str, ObTableMode &ret_mode, uint64_t tenant_data_version) {
     int ret = common::OB_SUCCESS;
     ret_mode.reset();
     char * flag = nullptr;
     const char *delim = "|";
     char *save_ptr = NULL;
-    char table_mode_str[str.length() + 1] ;
-    MEMSET(table_mode_str, '\0', str.length() + 1);
-    std::strncpy(table_mode_str, str.ptr(), str.length());
+    if (OB_UNLIKELY(str.length() > OB_MAX_TABLE_MODE_STR_LEN)) {
+      ret = common::OB_ERR_PARSER_SYNTAX;
+      SHARE_SCHEMA_LOG(WARN, "table mode string too long", K(ret), K(str.length()));
+    } else {
+      char table_mode_str[OB_MAX_TABLE_MODE_STR_LEN + 1];
+      MEMSET(table_mode_str, '\0', str.length() + 1);
+      std::strncpy(table_mode_str, str.ptr(), str.length());
     flag = strtok_r(table_mode_str, delim, &save_ptr);
     while (OB_SUCC(ret) && OB_NOT_NULL(flag))
     {
@@ -663,6 +669,7 @@ struct ObBackUpTableModeOp
         LOG_USER_ERROR(OB_NOT_SUPPORTED, QUEUING_MODE_NOT_COMPAT_USER_ERROR_STR);
        }
        flag = strtok_r(NULL, delim, &save_ptr);
+    }
     }
     return ret;
   }
