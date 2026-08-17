@@ -55,6 +55,7 @@ public:
   int reload(const bool reload_zone_merge_info = false);
   void reset_info()
   {
+    common::ObRecursiveMutexGuard guard(lock_);
     zone_merge_mgr_.reset_merge_info();
     freeze_info_mgr_.reset_freeze_info();
   };
